@@ -44,22 +44,5 @@ const COUNTRIES: Country[] = [
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  filter = new FormControl('');
-  countries$: Observable<Country[]>
-
-  constructor(pipe: DecimalPipe) {
-    this.countries$ = this.filter.valueChanges.pipe(
-      startWith(''),
-      map(text => this.search(text, pipe))
-    )
-  }
-
-  search(text: string, pipe: PipeTransform): Country[] {
-    const term = text.toLowerCase();
-    return COUNTRIES.filter(country => 
-      country.name.toLowerCase().includes(term) ||
-      pipe.transform(country.area).includes(term) ||
-      pipe.transform(country.population).includes(term)
-    );
-  }
+  
 }
