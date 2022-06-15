@@ -1,21 +1,25 @@
 <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
   <div class="form-group">
     <label for="nome">Nome</label>
-    <input type="text" class="form-control" placeholder="Nome" formControlName="nome">
+    <input type="text" class="form-control" placeholder="Nome" formControlName="nome" [ngClass]="aplicaCssErroInput('nome')">
+    <app-campo-control-erro [mostrarErro]="verificaValidTouched('nome')" mostrarMsg="Nome obrigatório"></app-campo-control-erro>
   </div>
   <div class="form-group">
     <label for="email">E-mail</label>
-    <input type="email" class="form-control" placeholder="email@email.com" formControlName="email">
+    <input type="email" class="form-control" placeholder="email@email.com" formControlName="email" [ngClass]="aplicaCssErroInput('email')">
+    <app-campo-control-erro [mostrarErro]="verificaValidTouched('email')" mostrarMsg="E-mail obrigatório"></app-campo-control-erro>
   </div>
-  <div>
+  <div formGroupName="endereco">
     <div class="form-group row">
       <div class="col">
         <label for="cep">CEP</label>
-        <input type="text" class="form-control" formControlName="cep">
+        <input type="text" class="form-control" formControlName="cep" [ngClass]="aplicaCssErroInput('endereco.cep')" (blur)="consultaCEP()">
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" mostrarMsg="CEP obrigatório"></app-campo-control-erro>
       </div>
       <div class="col">
         <label for="numero">Número</label>
-        <input type="text" class="form-control" formControlName="numero">
+        <input type="text" class="form-control" formControlName="numero" [ngClass]="aplicaCssErroInput('endereco.numero')">
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.numero')" mostrarMsg="Número obrigatório"></app-campo-control-erro>
       </div>
       <div class="col">
         <label for="complemento">Complemento</label>
@@ -24,24 +28,32 @@
     </div>
     <div class="form-group">
       <label for="rua">Rua</label>
-      <input type="text" class="form-control" formControlName="rua">
+      <input type="text" class="form-control" formControlName="rua" [ngClass]="aplicaCssErroInput('endereco.rua')">
+      <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.rua')" mostrarMsg="Rua obrigatória"></app-campo-control-erro>
     </div>
     <div class="form-group row">
       <div class="col-md-5">
         <label for="bairro">Bairro</label>
-        <input type="text" class="form-control" formControlName="bairro">
+        <input type="text" class="form-control" formControlName="bairro" [ngClass]="aplicaCssErroInput('endereco.bairro')">
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.bairro')" mostrarMsg="Bairro obrigatório"></app-campo-control-erro>
       </div>
       <div class="col-md-4">
         <label for="cidade">Cidade</label>
-        <input type="text" class="form-control" formControlName="cidade">
+        <input type="text" class="form-control" formControlName="cidade" [ngClass]="aplicaCssErroInput('endereco.cidade')">
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cidade')" mostrarMsg="Cidade obrigatória"></app-campo-control-erro>
       </div>
       <div class="col-md-3">
         <label for="estado">Estado</label>
-        <input type="text" class="form-control" formControlName="estado">
+        <!-- <input type="text" class="form-control" formControlName="estado" [ngClass]="aplicaCssErroInput('endereco.estado')"> -->
+        <select id="estado" class="form-control" formControlName="estado" [ngClass]="aplicaCssErroInput('endereco.estado')">
+          <option value="">Selecione o estado</option>
+          <option *ngFor="let estado of estados$ | async" [value]="estado.id">{{ estado.nome + ' - ' + estado.sigla }}</option>
+        </select>
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" mostrarMsg="Estado obrigatório"></app-campo-control-erro>
       </div>
     </div>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 
-  <!-- <app-form-debug [form]="f"></app-form-debug> -->
+  <app-form-debug [form]="formulario"></app-form-debug>
 </form>
