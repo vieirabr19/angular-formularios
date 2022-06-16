@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EstadoBr } from '../shared/models/estado-br';
-import { DropdowService } from '../shared/services/dropdow.service';
+import { DropdownService } from '../shared/services/dropdown.service';
 
 @Component({
   selector: 'app-data-form',
@@ -18,14 +18,12 @@ export class DataFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private dropdowService: DropdowService
+    private dropdownService: DropdownService
   ) { }
 
   ngOnInit(): void {
-    this.estados$ = this.dropdowService.getEstadosBr();
-
     this.formulario = this.fb.group({
-			nome: [null, Validators.required],
+      nome: [null, Validators.required],
 			email: [null, Validators.required],
       endereco: this.fb.group({
         cep: [null, Validators.required],
@@ -37,6 +35,8 @@ export class DataFormComponent implements OnInit {
         estado: [null, Validators.required]
       })
 		});
+
+    this.estados$ = this.dropdownService.getEstadoBr();
   }
 
   onSubmit() {
