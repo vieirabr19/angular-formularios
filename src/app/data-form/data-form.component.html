@@ -47,7 +47,7 @@
         <!-- <input type="text" class="form-control" formControlName="estado" [ngClass]="aplicaCssErroInput('endereco.estado')"> -->
         <select id="estado" class="form-control" formControlName="estado" [ngClass]="aplicaCssErroInput('endereco.estado')">
           <option value="">Selecione o estado</option>
-          <option *ngFor="let estado of (estados$ | async)" [value]="estado.id">{{ estado.nome + ' - ' + estado.sigla }}</option>
+          <option *ngFor="let estado of (estados$ | async)" [value]="estado.sigla">{{ estado.nome + ' - ' + estado.sigla }}</option>
         </select>
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" mostrarMsg="Estado obrigatório"></app-campo-control-erro>
       </div>
