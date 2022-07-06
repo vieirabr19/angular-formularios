@@ -44,7 +44,6 @@
       </div>
       <div class="col-md-3">
         <label for="estado">Estado</label>
-        <!-- <input type="text" class="form-control" formControlName="estado" [ngClass]="aplicaCssErroInput('endereco.estado')"> -->
         <select id="estado" class="form-control" formControlName="estado" [ngClass]="aplicaCssErroInput('endereco.estado')">
           <option value="">Selecione o estado</option>
           <option *ngFor="let estado of (estados$ | async)" [value]="estado.sigla">{{ estado.nome + ' - ' + estado.sigla }}</option>
@@ -53,7 +52,58 @@
       </div>
     </div>
   </div>
+
+  <div class="form-group row">
+    <div class="col-md-3">
+      <select id="cargo" class="form-control" formControlName="cargo" [compareWith]="compareWith">
+        <option value="">Selecione</option>
+        <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{ cargo.desc }}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select multiple id="tecnologias" class="form-control" formControlName="tecnologias">
+        <option *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{ tecnologia.desc }}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <h6>Newsletter</h6>
+      <div class="form-check form-check-inline">
+        <label class="form-check-label mr-3" *ngFor="let op of newsletter">
+          <input class="form-check-input" type="radio" formControlName="newsletter" [value]="op.valor">
+          Sim
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-md-3">
+      <h6>Temos</h6>
+      <div class="form-check form-check-inline">
+        <label class="form-check-label mr-3">
+          <input class="form-check-input" type="checkbox" formControlName="termos" [ngClass]="aplicaCssErroInput('termos')"> Sim
+        </label>
+      </div>
+      <app-campo-control-erro [mostrarErro]="verificaValidTouched('termos')" mostrarMsg="Termos obrigatório"></app-campo-control-erro>
+    </div>
+    <div class="col-md-9">
+      <h6>Frameworks</h6>
+      <div class="form-group row">
+        <div class="col-sm-2" formArrayName="frameworks" *ngFor="let item of formulario.get('frameworks')?.controls; index as i">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label mr-3">
+              <input class="form-check-input" type="checkbox" [formControlName]="i"> {{frameworks[i]}}
+            </label>
+          </div>
+          <app-campo-control-erro [mostrarErro]="verificaValidTouched('termos')" mostrarMsg="Termos obrigatório"></app-campo-control-erro>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button type="submit" class="btn btn-primary">Submit</button>
+  <button class="btn btn-info mr-3 ml-3" (click)="setarCargo()">Setar cargo</button>
+  <button type="button" class="btn btn-info" (click)="setarTecnologia()">Setar tecnologia</button>
 
   <app-form-debug [form]="formulario"></app-form-debug>
 </form>
