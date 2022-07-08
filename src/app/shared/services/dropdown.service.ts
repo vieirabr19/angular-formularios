@@ -47,4 +47,8 @@ export class DropdownService {
     ];
   }
 
+  getFrameworks(){
+    return ['Angular', 'React', 'Vue', 'Sencha'];
+  }
+
 }

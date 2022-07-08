@@ -18,7 +18,7 @@ export class DataFormComponent implements OnInit {
   cargos: any[];
   tecnologias: any[];
   newsletter: any[];
-  frameworks = ['Angular', 'React', 'Vue', 'Sencha'];
+  frameworks: any[];
 
   constructor(
     private fb: FormBuilder,
@@ -28,6 +28,12 @@ export class DataFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.estados$ = this.dropdownService.getEstadoBr();
+    this.cargos = this.dropdownService.getCargos();
+    this.tecnologias = this.dropdownService.getTecnologias();
+    this.newsletter = this.dropdownService.getNewletter();
+    this.frameworks = this.dropdownService.getFrameworks();
+
     this.formulario = this.fb.group({
       nome: [null, Validators.required],
 			email: [null, Validators.required],
@@ -42,19 +48,15 @@ export class DataFormComponent implements OnInit {
       }),
       cargo: [null],
       tecnologias: [null],
-      newsletter: ['sim'],
+      newsletter: this.newsletter[0].valor,
       termos: [null, [Validators.pattern('true'), Validators.required]],
       frameworks: this.buildFrameworks()
 		});
-
-    this.estados$ = this.dropdownService.getEstadoBr();
-    this.cargos = this.dropdownService.getCargos();
-    this.tecnologias = this.dropdownService.getTecnologias();
-    this.newsletter = this.dropdownService.getNewletter();
   }
 
   buildFrameworks(){
     const values = this.frameworks.map((v) => new FormControl(false));
+    console.log(values);
     return this.fb.array(values);
   }
 
@@ -65,7 +67,6 @@ export class DataFormComponent implements OnInit {
         .map((v, i) => v ? this.frameworks[i] : null)
         .filter(v => v !== null)
     });
-    console.log(valueSubmit);
 
     if(this.formulario.valid){
       this.http.post('https://httpbin.org/post', valueSubmit)
