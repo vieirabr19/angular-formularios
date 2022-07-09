@@ -48,7 +48,12 @@ export class DropdownService {
   }
 
   getFrameworks(){
-    return ['Angular', 'React', 'Vue', 'Sencha'];
+    return [
+      {nome:'angular', desc: 'Angular'},
+      {nome:'react', desc: 'React'},
+      {nome:'vue', desc: 'Vue'},
+      {nome:'sencha', desc: 'Sencha'}
+    ];
   }
 
 }

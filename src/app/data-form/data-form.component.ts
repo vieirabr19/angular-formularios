@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { FormValidations } from '../shared/form-validations';
 import { EstadoBr } from '../shared/models/estado-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
 import { DropdownService } from '../shared/services/dropdown.service';
@@ -56,22 +57,21 @@ export class DataFormComponent implements OnInit {
 
   buildFrameworks(){
     const values = this.frameworks.map((v) => new FormControl(false));
-    console.log(values);
-    return this.fb.array(values);
+    return this.fb.array(values, FormValidations.requiredMinCheckbox(1));
   }
 
   onSubmit() {
     let valueSubmit = Object.assign({}, this.formulario.value);
     valueSubmit = Object.assign(valueSubmit, {
       frameworks: valueSubmit.frameworks
-        .map((v, i) => v ? this.frameworks[i] : null)
-        .filter(v => v !== null)
+      .map((v, i) => v ? this.frameworks[i].nome : null)
+      .filter(v => v !== null)
     });
 
     if(this.formulario.valid){
       this.http.post('https://httpbin.org/post', valueSubmit)
       .subscribe(dados => {
-          console.log(dados['json']);
+          // console.log(dados['json']);
           this.resetarForm();
         },
         (error: any) => alert('Erro')
