@@ -20,6 +20,7 @@ export class DataFormComponent implements OnInit {
   tecnologias: any[];
   newsletter: any[];
   frameworks: any[];
+  minCheckbox: number = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -39,7 +40,7 @@ export class DataFormComponent implements OnInit {
       nome: [null, Validators.required],
 			email: [null, Validators.required],
       endereco: this.fb.group({
-        cep: [null, Validators.required],
+        cep: [null, [Validators.required, FormValidations.cepValidator]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
@@ -57,10 +58,19 @@ export class DataFormComponent implements OnInit {
 
   buildFrameworks(){
     const values = this.frameworks.map((v) => new FormControl(false));
-    return this.fb.array(values, FormValidations.requiredMinCheckbox(1));
+    return this.fb.array(values, FormValidations.requiredMinCheckbox(this.minCheckbox));
+
+    /* return this.formBuilder.array([
+      new FormControl(false), // angular
+      new FormControl(false), // react
+      new FormControl(false), // vue
+      new FormControl(false) // sencha
+    ]); */
   }
 
   onSubmit() {
+    console.log(this.formulario);
+
     let valueSubmit = Object.assign({}, this.formulario.value);
     valueSubmit = Object.assign(valueSubmit, {
       frameworks: valueSubmit.frameworks
@@ -96,7 +106,7 @@ export class DataFormComponent implements OnInit {
     this.limpaDadosForm();
     let cep = this.formulario.get('endereco.cep').value;
 
-    if(cep != null && cep !== ''){
+    if(cep && cep != null && cep !== ''){
       this.consultaCepService.consultaCEP(cep).subscribe(dados => this.populaDadosForm(dados));
     }
   }
@@ -133,9 +143,13 @@ export class DataFormComponent implements OnInit {
     return !this.formulario.get(campo).valid && (this.formulario.get(campo).touched || this.formulario.get(campo).dirty);
   }
 
+  verificaRequired(campo: string){
+    return this.formulario.get(campo).hasError('required') && (this.formulario.get(campo).touched || this.formulario.get(campo).dirty);
+  }
+
   aplicaCssErroInput(campo: string){
     return {
-      'is-invalid': this.verificaValidTouched(campo)
+      'is-invalid': this.verificaValidTouched(campo) || this.verificaRequired(campo)
     }
   }
 

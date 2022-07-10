@@ -14,7 +14,8 @@
       <div class="col">
         <label for="cep">CEP</label>
         <input type="text" class="form-control" formControlName="cep" [ngClass]="aplicaCssErroInput('endereco.cep')" (blur)="consultaCEP()">
-        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" mostrarMsg="CEP obrigatório"></app-campo-control-erro>
+        <app-campo-control-erro [mostrarErro]="verificaRequired('endereco.cep')" mostrarMsg="CEP obrigatório"></app-campo-control-erro>
+        <app-campo-control-erro [mostrarErro]="formulario.get('endereco.cep').hasError('cepInvalido')" mostrarMsg="CEP inválido"></app-campo-control-erro>
       </div>
       <div class="col">
         <label for="numero">Número</label>
@@ -97,7 +98,7 @@
           </div>
         </div>
       </div>
-      <app-campo-control-erro [mostrarErro]="verificaValidTouched('frameworks')" mostrarMsg="Selecione uma opção"></app-campo-control-erro>
+      <app-campo-control-erro [mostrarErro]="verificaValidTouched('frameworks')" mostrarMsg="Selecione {{minCheckbox}} opção"></app-campo-control-erro>
     </div>
   </div>
 

@@ -17,7 +17,6 @@ export class ConsultaCepService {
 
     if(cep != ''){
       var validacep = /^[0-9]{8}$/; //Expressão regular para validar o CEP.
-
       if(validacep.test(cep)){
         return this.http.get<ConsultaCep>(`https://viacep.com.br/ws/${cep}/json/`);
       }
