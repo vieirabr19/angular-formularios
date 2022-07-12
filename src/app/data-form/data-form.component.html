@@ -9,6 +9,11 @@
     <input type="email" class="form-control" placeholder="email@email.com" formControlName="email" [ngClass]="aplicaCssErroInput('email')">
     <app-campo-control-erro [mostrarErro]="verificaValidTouched('email')" mostrarMsg="E-mail obrigatório"></app-campo-control-erro>
   </div>
+  <div class="form-group">
+    <label for="emailComfirma">Confirmar E-mail</label>
+    <input type="emailComfirma" class="form-control" placeholder="email@email.com" formControlName="emailComfirma" [ngClass]="aplicaCssErroInput('emailComfirma')">
+    <app-campo-control-erro [mostrarErro]="formulario.get('emailComfirma').hasError('equalsTo')" mostrarMsg="E-mails não são iguais"></app-campo-control-erro>
+  </div>
   <div formGroupName="endereco">
     <div class="form-group row">
       <div class="col">
