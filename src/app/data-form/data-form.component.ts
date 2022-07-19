@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
+import { map, tap, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { FormValidations } from '../shared/form-validations';
 import { EstadoBr } from '../shared/models/estado-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
 import { DropdownService } from '../shared/services/dropdown.service';
+import { VerificaEmailService } from '../shared/services/verifica-email.service';
 
 @Component({
   selector: 'app-data-form',
@@ -20,13 +22,37 @@ export class DataFormComponent implements OnInit {
   tecnologias: any[];
   newsletter: any[];
   frameworks: any[];
-  minCheckbox: number = 1;
+  minCheckbox: number = 2;
+
+  // list = [
+  //   {id:1,value:'Elenor Anderson',isSelected:false},
+  //   {id:2,value:'Caden Kunze',isSelected:false},
+  //   {id:3,value:'Ms. Hortense Zulauf',isSelected:false},
+  //   {id:4,value:'Grady Reichert',isSelected:false},
+  //   {id:5,value:'Dejon Olson',isSelected:false},
+  //   {id:6,value:'Jamir Pfannerstill',isSelected:false},
+  //   {id:7,value:'Aracely Renner DVM',isSelected:false},
+  //   {id:8,value:'Genoveva Luettgen',isSelected:false}
+  // ];
+
+  // allSelected = false;
+
+  // allCheckSelected(){
+  //   for(let i = 0; i < this.list.length; i++) {
+  //     this.list[i].isSelected = this.allSelected;
+  //   }
+  // }
+
+  // isAllCheckSelected() {
+  //   this.allSelected = this.list.every(item => item.isSelected === true);
+  // }
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private dropdownService: DropdownService,
-    private consultaCepService: ConsultaCepService
+    private consultaCepService: ConsultaCepService,
+    private verificaEmailService: VerificaEmailService
   ) { }
 
   ngOnInit(): void {
@@ -37,8 +63,8 @@ export class DataFormComponent implements OnInit {
     this.frameworks = this.dropdownService.getFrameworks();
 
     this.formulario = this.fb.group({
-      nome: [null, Validators.required],
-			email: [null, [Validators.required, Validators.email]],
+      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(6)]],
+			email: [null, [Validators.required, Validators.email], [this.verifcaEmail.bind(this)]],
 			emailComfirma: [null, [FormValidations.equalsTo('email')]],
       endereco: this.fb.group({
         cep: [null, [Validators.required, FormValidations.cepValidator]],
@@ -55,6 +81,15 @@ export class DataFormComponent implements OnInit {
       termos: [null, [Validators.pattern('true'), Validators.required]],
       frameworks: this.buildFrameworks()
 		});
+
+    // popula dados do cep no formulario
+    this.formulario.get('endereco.cep').statusChanges
+    .pipe(
+      distinctUntilChanged(),
+      tap(value => console.log('TAP',value)),
+      switchMap(status => status === 'VALID' ? this.consultaCepService.consultaCEP(this.formulario.get('endereco.cep').value) : EMPTY)
+    )
+    .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
   }
 
   buildFrameworks(){
@@ -148,6 +183,11 @@ export class DataFormComponent implements OnInit {
     return this.formulario.get(campo).hasError('required') && (this.formulario.get(campo).touched || this.formulario.get(campo).dirty);
   }
 
+  verificaEmailInvalido() {
+    const campoEmail = this.formulario.get('email');
+    if (campoEmail.errors) return campoEmail.errors['email'] && campoEmail.touched;
+  }
+
   aplicaCssErroInput(campo: string){
     return {
       'is-invalid': this.verificaValidTouched(campo) || this.verificaRequired(campo)
@@ -165,6 +205,13 @@ export class DataFormComponent implements OnInit {
 
   setarTecnologia(){
     this.formulario.get('tecnologias').setValue(['java', 'javascript', 'ruby']);
+  }
+
+  verifcaEmail(formControl: FormControl){
+    return this.verificaEmailService.getVerificaEmail(formControl.value)
+      .pipe(
+        map(emailExiste => emailExiste ? {emailInvalido: true} : null)
+      );
   }
 
 }
