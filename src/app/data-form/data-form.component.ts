@@ -63,7 +63,7 @@ export class DataFormComponent implements OnInit {
     this.frameworks = this.dropdownService.getFrameworks();
 
     this.formulario = this.fb.group({
-      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(6)]],
+      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(36)]],
 			email: [null, [Validators.required, Validators.email], [this.verifcaEmail.bind(this)]],
 			emailComfirma: [null, [FormValidations.equalsTo('email')]],
       endereco: this.fb.group({
@@ -105,7 +105,7 @@ export class DataFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.formulario);
+    // console.log(this.formulario);
 
     let valueSubmit = Object.assign({}, this.formulario.value);
     valueSubmit = Object.assign(valueSubmit, {
@@ -117,7 +117,7 @@ export class DataFormComponent implements OnInit {
     if(this.formulario.valid){
       this.http.post('https://httpbin.org/post', valueSubmit)
       .subscribe(dados => {
-          // console.log(dados['json']);
+          console.log(dados['json']);
           this.resetarForm();
         },
         (error: any) => alert('Erro')
