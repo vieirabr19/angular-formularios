@@ -81,7 +81,11 @@
       </div>
       <div class="col-md-4">
         <label for="cidade">Cidade</label>
-        <input type="text" class="form-control" formControlName="cidade" [ngClass]="aplicaCssErroInput('endereco.cidade')">
+        <!-- <input type="text" class="form-control" formControlName="cidade" [ngClass]="aplicaCssErroInput('endereco.cidade')"> -->
+        <select id="estado" class="form-control" formControlName="cidade" [ngClass]="aplicaCssErroInput('endereco.cidade')">
+          <option value="">Selecione a cidade</option>
+          <option *ngFor="let cidade of cidades" [value]="cidade.nome">{{ cidade.nome }}</option>
+        </select>
         <!-- <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cidade')" mostrarMsg="Cidade obrigatória"></app-campo-control-erro> -->
         <app-error-msg [control]="formulario.get('endereco.cidade')" label="Cidade"></app-error-msg>
       </div>

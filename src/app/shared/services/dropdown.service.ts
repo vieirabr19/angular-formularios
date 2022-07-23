@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { CidadeBr } from '../models/cidade-br';
 import { EstadoBr } from '../models/estado-br';
 
@@ -24,14 +24,14 @@ export class DropdownService {
     );
   }
 
-  getCidadeBr(idEstado: number): Observable<CidadeBr[]>{
-    return this.http.get<CidadeBr[]>(`assets/dados/cidadesbr.json`)
+  getCidadeBr(): Observable<CidadeBr[]>{
+    return this.http.get<CidadeBr[]>('assets/dados/cidadesbr.json');
+  }
+
+  getCidadeBrId(idEstado: number): Observable<CidadeBr[]>{
+    return this.http.get<CidadeBr[]>('assets/dados/cidadesbr.json')
       .pipe(
-        map((cidade: CidadeBr[]) => cidade.filter(c => c.estado == idEstado)),
-        catchError(error => {
-          console.log('ERRO NA REQUISIÇÃO:', error);
-          return throwError(error);
-        })
+        map(cidades => cidades.filter(c => c.estado == idEstado))
       );
   }
 

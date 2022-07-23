@@ -62,6 +62,8 @@ export class DataFormComponent extends FormBaseComponent implements OnInit {
   ngOnInit(): void {
     // this.estados$ = this.dropdownService.getEstadoBr();
     this.dropdownService.getEstadoBr().subscribe(estados => this.estados = estados);
+    this.dropdownService.getCidadeBr().subscribe(cidades => this.cidades = cidades);
+    this.dropdownService.getCidadeBrId(5).subscribe();
     this.cargos = this.dropdownService.getCargos();
     this.tecnologias = this.dropdownService.getTecnologias();
     this.newsletter = this.dropdownService.getNewletter();
@@ -98,9 +100,12 @@ export class DataFormComponent extends FormBaseComponent implements OnInit {
 
     this.formulario.get('endereco.estado').valueChanges
       .pipe(
-        tap(estado => console.log('Novo estado:',estado)),
-        map(dados => console.log('Dados:', dados))
+        // tap(estado => console.log('Novo estado', estado)),
+        map(estados => this.estados.filter(estado => estado.sigla == estados )),
+        map(estado => estado && estado.length > 0 ? estado[0].id : EMPTY),
+        switchMap(idEstado => this.dropdownService.getCidadeBrId(Number(idEstado)))
       )
+      .subscribe(cidades => this.cidades = cidades);
   }
 
   buildFrameworks(){
